@@ -1,6 +1,6 @@
 <?php
 
-namespace mapleLeaves\Auth;
+namespace wksnow\Auth;
 class Auth
 {
 

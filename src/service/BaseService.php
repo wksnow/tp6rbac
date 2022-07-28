@@ -1,7 +1,7 @@
 <?php
 
 
-namespace mapleLeaves\service;
+namespace wksnow\service;
 
 
 

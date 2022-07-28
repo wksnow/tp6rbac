@@ -1,7 +1,7 @@
 <?php
 
 
-namespace mapleLeaves\model;
+namespace wksnow\model;
 
 
 use think\Exception;

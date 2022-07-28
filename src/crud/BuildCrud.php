@@ -1,6 +1,6 @@
 <?php
 
-namespace mapleLeaves\crud;
+namespace wksnow\crud;
 
 use think\facade\Db;
 

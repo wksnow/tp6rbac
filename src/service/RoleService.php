@@ -1,11 +1,11 @@
 <?php
 
-namespace mapleLeaves\service;
+namespace wksnow\service;
 
 
-use mapleLeaves\model\Admin;
-use mapleLeaves\model\Node;
-use mapleLeaves\model\Role;
+use wksnow\model\Admin;
+use wksnow\model\Node;
+use wksnow\model\Role;
 
 class RoleService extends BaseService
 {

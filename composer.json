@@ -1,5 +1,5 @@
 {
-  "name": "mapleLeaves/tp6rbac",
+  "name": "wksnow/tp6rbac",
   "description": "tp6.0的rbac",
   "authors": [
     {
@@ -15,7 +15,7 @@
   },
   "autoload": {
     "psr-4": {
-      "mapleLeaves\\": "src/"
+      "wksnow\\": "src/"
     },
     "files": [
       "src/helper.php"

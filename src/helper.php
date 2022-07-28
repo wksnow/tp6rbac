@@ -2,7 +2,7 @@
 
 think\console::starting(function (\think\console $console){
     $console->addCommands([
-        'mapleLeaves'=>'mapleLeaves\\command\\Crud'
+        'wksnow'=>'wksnow\\command\\Crud'
     ]);
 });
 

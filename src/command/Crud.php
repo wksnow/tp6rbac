@@ -1,7 +1,7 @@
 <?php
 
 
-namespace mapleLeaves\command;
+namespace wksnow\command;
 
 
 use think\console\Command;
