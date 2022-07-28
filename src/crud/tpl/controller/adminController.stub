@@ -1,0 +1,107 @@
+<?php
+
+namespace {%controllerNamespace%};
+
+use {%modelNamespace%}\{%model%} as {%model%}Model;
+use {%validateNamespace%}\{%validate%};
+use think\exception\ValidateException;
+
+class {%controllerName%} extends Base
+{
+    /**
+    * 获取列表
+    */
+    public function getList()
+    {
+        if (request()->isPost()) {
+             $limit  = $this->request->param("limit/d",10);
+             $where = [];
+
+            ${%model%}Model = new {%model%}Model();
+            $list = ${%model%}Model->getList($where, $limit);
+            return json(pageReturn($list));
+        }
+    }
+
+    /**
+    * 添加
+    */
+    public function add()
+    {
+        if (request()->isPost()) {
+
+            $param = $this->request->param();
+
+            // 检验完整性
+            try {
+                validate({%validate%}::class)->check($param);
+            } catch (ValidateException $e) {
+                return jsonReturn(-1, $e->getError());
+            }
+
+            ${%model%}Model = new {%model%}Model();
+            $res = ${%model%}Model->addParam($param);
+
+            return json($res);
+        }
+    }
+
+    /**
+    * 查询信息
+    */
+    public function read()
+    {
+        $where=[];
+        $param = $this->request->param();
+        ${%model%}Model = new {%model%}Model();
+        $info = ${%model%}Model->detail($where);
+
+        return json($info);
+    }
+
+    /**
+    * 编辑
+    */
+    public function edit()
+    {
+         if (request()->isPost()) {
+          $param = $this->request->param();
+            // 检验完整性
+            try {
+                validate({%model%}Validate::class)->check($param);
+            } catch (ValidateException $e) {
+                return jsonReturn(-1, $e->getError());
+            }
+            $where=[];
+            ${%model%}Model = new {%model%}Model();
+            $res = ${%model%}Model->updateParam($where,$param);
+            return json($res);
+         }
+    }
+
+    /**
+    * 物理删除
+    */
+    public function del()
+    {
+         $param = $this->request->param();
+        $where=[];
+        ${%model%}Model = new {%model%}Model();
+        $info = ${%model%}Model->delParam($where);
+
+        return json($info);
+   }
+
+    /**
+       * 软删除
+       */
+       public function softDel()
+       {
+            $param = $this->request->param();
+            $where=[];
+            ${%model%}Model = new {%model%}Model();
+           $info = ${%model%}Model->softDel($where);
+           return json($info);
+      }
+
+}
