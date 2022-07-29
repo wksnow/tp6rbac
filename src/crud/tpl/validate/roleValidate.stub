@@ -1,0 +1,34 @@
+<?php
+
+namespace app\admin\validate\admin;
+
+use think\Validate;
+
+class RoleValidate extends Validate
+{
+    protected $rule = [
+        'role_id' => 'require|gt:0',
+        'role_name' => 'require|max:55',
+        'role_node' => 'require',
+        'status' => 'require|between:1,2',
+    ];
+
+    protected $message = [
+        'role_id.require'=>"角色ID不能为空",
+        'role_id.gt'=>"角色ID格式错误",
+        'role_name.require'=>"请输入角色名",
+        'role_name.max'=>"角色名长度不能超过55位",
+        'role_node.require'=>"权限集不能为空",
+        'status.require'=>"请选择状态",
+        'status.between'=>"角色状态范围错误",
+    ];
+
+    protected $scene = [
+        'addRole' => ['role_name', 'role_node'],
+        'editRole' => ['role_id'],
+        'changeRoleStatus' => ['role_id','status'],
+        'delRole' => ['role_id'],
+        'getRoleInfo' => ['role_id'],
+    ];
+
+}

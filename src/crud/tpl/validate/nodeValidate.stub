@@ -1,0 +1,27 @@
+<?php
+
+namespace app\admin\validate\admin;
+
+use think\Validate;
+
+class NodeValidate extends Validate
+{
+    protected $rule = [
+        'node_id' => 'require|gt',
+        'node_name' => 'require|max:55',
+    ];
+
+    protected $message = [
+        "node_id.require"=>"节点id不能为空",
+        "node_id.gt"=>"节点id必须大于0",
+        "node_name.require"=>"请输入节点名称",
+        "node_name.max"=>"节点名称最长55个字符",
+    ];
+
+    protected $scene = [
+        'addNode' => ['node_name'],
+        'editNode' => ['node_id', 'node_name'],
+        'delNode' => ['node_id'],
+    ];
+
+}

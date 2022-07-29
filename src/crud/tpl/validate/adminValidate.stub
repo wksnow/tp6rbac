@@ -1,0 +1,35 @@
+<?php
+
+namespace app\admin\validate\admin;
+
+use think\Validate;
+
+class AdminValidate extends Validate
+{
+    protected $rule = [
+        'admin_id' => 'require|gt:0',
+        'admin_name' => 'require|max:55',
+        'admin_pwd' => 'require',
+        'role_id' => 'require|gt:0',
+        'status' => 'require|between:1,2',
+    ];
+
+    protected $message = [
+        'admin_id.require' => '管理员id不能为空',
+        'admin_id.gt' => '管理员id格式错误',
+        'admin_name.require'=>"请输入名称",
+        'admin_name.max'=>"名称长度不能超过55个字符",
+        'admin_pwd.require'=>"密码不能为空",
+        'role_id.require'=>"角色不能为空",
+        'role_id.gt'=>"角色的格式错误",
+        'status.require'=>"状态不能为空",
+        'status.between'=>"状态范围错误",
+    ];
+
+    protected $scene = [
+        'add' => ['admin_name', 'admin_pwd', 'role_id', 'status'],
+        'edit'=> ['admin_id'],
+        'changePassword'=> [ 'admin_pwd'],
+    ];
+
+}

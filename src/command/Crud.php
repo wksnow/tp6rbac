@@ -9,6 +9,9 @@ use think\console\Input;
 use think\console\input\Option;
 use think\console\Output;
 use think\facade\Config;
+use wksnow\crud\BuildCrud;
+use wksnow\crud\BuildFile;
+use wksnow\crud\CliEcho;
 
 class Crud extends Command
 {
@@ -16,15 +19,28 @@ class Crud extends Command
     protected function configure()
     {
         $this->setName('rbac')
-            ->addOption('controllerFilename', 'c', Option::VALUE_REQUIRED, '控制器路径', "app\admin\controller\\v1\admin")
+            ->addOption("createTable",'t',Option::VALUE_REQUIRED,"创建数据表",0)
+            ->addOption('basePath', 'b', Option::VALUE_REQUIRED, '控制器基础路径', "app\admin\controller\\v1")
             ->addOption('force', 'f', Option::VALUE_REQUIRED, '强制覆盖模式', 0)
-            ->setDescription('一键导入rbac表(admin,node,role)');
+            ->setDescription('一键导入rbac表(admin,node,role)并生成对应的文件');
     }
 
     protected function execute(Input $input, Output $output)
     {
-
-//        $force = $input->getOption("force");
+        $force = $input->getOption("force");
+        $basePath = $input->getOption("basePath");
+        $createTable = $input->getOption("createTable");
+        //createTable为1的时候创建数据表
+        if($createTable==1){
+            (new BuildCrud())->createTable();
+            CliEcho::success('自动生成CURD成功');
+        }
+        //生成
+        $buildFile = new BuildFile();
+        $buildFile->setControllerData($basePath,$force);
+        $buildFile->setValidateData($force);
+        
+        die;
 //        if($force){
 //            $output->info("确定覆盖rbac表?。 请输入 'yes' 按回车键继续操作: ");
 //            $line = fgets(defined('STDIN') ? STDIN : fopen('php://stdin', 'r'));
@@ -42,20 +58,7 @@ class Crud extends Command
 
 
 
-    /**
-     * 生成文件并写入
-     * @param $pathname //文件名称
-     * @param $content //文件内容
-     */
-    protected function makefile($pathname,$content)
-    {
-        if(!file_exists($pathname)){
-            if (!is_dir(dirname($pathname))) {
-                mkdir(dirname($pathname), 0755, true);
-            }
-            return file_put_contents($pathname, $content);
-        }
-    }
+    
 
 
 }

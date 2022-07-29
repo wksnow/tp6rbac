@@ -2,106 +2,80 @@
 
 namespace {%controllerNamespace%};
 
-use {%modelNamespace%}\{%model%} as {%model%}Model;
-use {%validateNamespace%}\{%validate%};
+use {%baseNamespace%}\Base;
+use app\admin\validate\admin\AdminValidate;
+use wksnow\service\AdminService;
 use think\exception\ValidateException;
+use think\annotation\Inject;
 
-class {%controllerName%} extends Base
+class Admin extends Base
 {
-    /**
-    * 获取列表
-    */
-    public function getList()
-    {
-        if (request()->isPost()) {
-             $limit  = $this->request->param("limit/d",10);
-             $where = [];
 
-            ${%model%}Model = new {%model%}Model();
-            $list = ${%model%}Model->getList($where, $limit);
-            return json(pageReturn($list));
+     /**
+         * @Inject()
+         * @var AdminService
+         */
+        protected $adminService;
+
+     /**
+         * 账号列表
+         * @return \think\response\Json
+         */
+        public function list()
+        {
+            $param = $this->request->only(['admin_name','nick_name','role_id','status','limit']);
+            $limit = $this->request->param('limit');
+            return json($this->adminService->getAdminList($param,$limit));
         }
-    }
 
-    /**
-    * 添加
-    */
-    public function add()
-    {
-        if (request()->isPost()) {
-
-            $param = $this->request->param();
-
+        /**
+         * 新增账户
+         * @return \think\response\Json
+         */
+        public function add()
+        {
+            $param = $this->request->only(['admin_name','nick_name','admin_avatar','admin_pwd','role_id','status']);
             // 检验完整性
             try {
-                validate({%validate%}::class)->check($param);
+                validate(AdminValidate::class)->scene('add')->check($param);
             } catch (ValidateException $e) {
                 return jsonReturn(-1, $e->getError());
             }
-
-            ${%model%}Model = new {%model%}Model();
-            $res = ${%model%}Model->addParam($param);
-
-            return json($res);
+            return json($this->adminService->addAdmin($param));
         }
-    }
 
-    /**
-    * 查询信息
-    */
-    public function read()
-    {
-        $where=[];
-        $param = $this->request->param();
-        ${%model%}Model = new {%model%}Model();
-        $info = ${%model%}Model->detail($where);
 
-        return json($info);
-    }
-
-    /**
-    * 编辑
-    */
-    public function edit()
-    {
-         if (request()->isPost()) {
-          $param = $this->request->param();
+        /**
+         * 新增账户
+         * @return \think\response\Json
+         */
+        public function edit()
+        {
+            $param = $this->request->only(['admin_id','admin_name','nick_name','admin_avatar','admin_pwd','role_id','status']);
             // 检验完整性
             try {
-                validate({%model%}Validate::class)->check($param);
+                validate(AdminValidate::class)->scene('edit')->check($param);
             } catch (ValidateException $e) {
                 return jsonReturn(-1, $e->getError());
             }
-            $where=[];
-            ${%model%}Model = new {%model%}Model();
-            $res = ${%model%}Model->updateParam($where,$param);
-            return json($res);
-         }
-    }
+            return json($this->adminService->editAdmin($param));
+        }
 
-    /**
-    * 物理删除
-    */
-    public function del()
-    {
-         $param = $this->request->param();
-        $where=[];
-        ${%model%}Model = new {%model%}Model();
-        $info = ${%model%}Model->delParam($where);
 
-        return json($info);
-   }
-
-    /**
-       * 软删除
-       */
-       public function softDel()
-       {
-            $param = $this->request->param();
-            $where=[];
-            ${%model%}Model = new {%model%}Model();
-           $info = ${%model%}Model->softDel($where);
-           return json($info);
-      }
+        /**
+         * 修改密码
+         * @return \think\response\Json
+         */
+        public function changePassword()
+        {
+            $adminPwd = $this->request->param('admin_pwd');
+            // 检验完整性
+            try {
+                validate(AdminValidate::class)->scene('changePassword')->check(['admin_pwd'=>$adminPwd]);
+            } catch (ValidateException $e) {
+                return jsonReturn(-1, $e->getError());
+            }
+            return json($this->adminService->changePassword($this->user['uid'],$adminPwd));
+        }
 
 }

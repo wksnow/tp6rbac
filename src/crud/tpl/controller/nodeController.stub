@@ -1,0 +1,117 @@
+<?php
+
+namespace {%controllerNamespace%};
+
+use {%baseNamespace%}\Base;
+use app\admin\validate\admin\NodeValidate;
+use wksnow\service\NodeService;
+use think\exception\ValidateException;
+use think\annotation\Inject;
+
+class Node extends Base
+{
+    /**
+     * @Inject()
+     * @var NodeService
+     */
+    protected $nodeService;
+
+
+    /**
+     * 获取菜单列表
+     * @return \think\response\Json
+     */
+    public function getMenuList()
+    {
+        return json($this->nodeService->getMenuByRole($this->user['role'],$this->user['uid']));
+    }
+
+
+    /**
+     * 获取权限列表
+     * @return \think\response\Json
+     */
+    public function getNodeList()
+    {
+        $roleId = $this->request->param("role_id/d",2);
+        if ($roleId <= 1){
+            return jsonReturn(-1, '角色不存在');
+        }
+        return json($this->nodeService->getNodeByRole($roleId));
+    }
+
+
+    /**
+     * 获取权限列表
+     * @return \think\response\Json
+     */
+    public function getSubsetNode()
+    {
+        $nodePid = $this->request->param("node_pid/d",0);
+        return json($this->nodeService->getNodeByPid($nodePid));
+    }
+
+    /**
+     * 添加节点
+     * @return \think\response\Json
+     */
+    public function addNode()
+    {
+        $param = $this->request->only(['flag','node_name','front_path','node_path','node_pid','node_icon','is_menu']);
+        // 检验完整性
+        try {
+            validate(NodeValidate::class)->scene('addNode')->check($param);
+        } catch (ValidateException $e) {
+            return jsonReturn(-1, $e->getError());
+        }
+        if (( !isset($param['is_menu']) || $param['is_menu'] == 0)  && empty($param['node_path'])  ){
+            return jsonReturn(-1, '非菜单请填写节点路径');
+        }
+        return json($this->nodeService->addNode($param));
+    }
+
+    /**
+     * 编辑节点
+     * @return \think\response\Json
+     */
+    public function editNode()
+    {
+        $param = $this->request->only(['node_id','flag','node_name','front_path','node_path','node_pid','node_icon','is_menu']);
+        // 检验完整性
+        try {
+            validate(NodeValidate::class)->scene('editNode')->check($param);
+        } catch (ValidateException $e) {
+            return jsonReturn(-1, $e->getError());
+        }
+        if (( !isset($param['is_menu']) || $param['is_menu'] == 0)  && empty($param['node_path'])  ){
+            return jsonReturn(-1, '非菜单请填写节点路径');
+        }
+        return json($this->nodeService->editNode($param));
+    }
+
+
+    /**
+     * 删除节点
+     * @return \think\response\Json
+     */
+    public function delNode()
+    {
+        $nodeId = $this->request->param("node_id/d");
+        // 检验完整性
+        try {
+            validate(NodeValidate::class)->scene('delNode')->check(['node_id'=>$nodeId]);
+        } catch (ValidateException $e) {
+            return jsonReturn(-1, $e->getError());
+        }
+        return json($this->nodeService->delNode($nodeId));
+    }
+
+    /**
+     * 获取所有的权限节点
+     * @return \think\response\Json
+     */
+    public function getAllNode()
+    {
+        return json($this->nodeService->getAllNode());
+    }
+}

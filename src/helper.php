@@ -1,8 +1,8 @@
 <?php
 
-think\console::starting(function (\think\console $console){
+think\console::starting(function (\think\console $console) {
     $console->addCommands([
-        'wksnow'=>'wksnow\\command\\Crud'
+        'wksnow' => 'wksnow\\command\\Crud'
     ]);
 });
 
@@ -14,7 +14,8 @@ think\console::starting(function (\think\console $console){
  * @return array
  */
 if (!function_exists('dataReturn')) {
-    function dataReturn($code, $msg = 'success', $data = []) {
+    function dataReturn($code, $msg = 'success', $data = [])
+    {
         return ['code' => $code, 'data' => $data, 'msg' => $msg];
     }
 }
@@ -27,7 +28,8 @@ if (!function_exists('dataReturn')) {
  * @return \think\response\Json
  */
 if (!function_exists('jsonReturn')) {
-    function jsonReturn($code, $msg = 'success', $data = []) {
+    function jsonReturn($code, $msg = 'success', $data = [])
+    {
         return json(['code' => $code, 'data' => $data, 'msg' => $msg]);
     }
 }
@@ -38,7 +40,8 @@ if (!function_exists('jsonReturn')) {
  * @return array
  */
 if (!function_exists('pageReturn')) {
-    function pageReturn($list) {
+    function pageReturn($list)
+    {
         if (0 == $list['code']) {
             return ['code' => 0, 'msg' => 'ok', 'count' => $list['data']->total(), 'data' => $list['data']->all()];
         }
@@ -53,7 +56,7 @@ if (!function_exists('pageReturn')) {
  * @param $parent_iden
  * @return array
  */
-if(!function_exists("makeUniversalTree")) {
+if (!function_exists("makeUniversalTree")) {
     function makeUniversalTree($data, $id, $parent_iden)
     {
         $res = [];
@@ -86,7 +89,7 @@ if(!function_exists("makeUniversalTree")) {
 
 /**
  * 密码加密算法
- * @param string $value  需要加密的值
+ * @param string $value 需要加密的值
  * @return mixed
  */
 if (!function_exists('password')) {
@@ -94,5 +97,34 @@ if (!function_exists('password')) {
     {
         $value = md5($value) . md5('_encrypt') . sha1($value);
         return sha1($value);
+    }
+}
+
+/**
+ * 解析token中简短的用户信息
+ * @param $token
+ * @return array
+ */
+if (!function_exists("getUserSimpleInfo")) {
+    function getUserSimpleInfo($token)
+    {
+        try {
+            $token = (new \Lcobucci\JWT\Parser())->parse($token);
+        } catch (\Exception $e) {
+            return dataReturn(-1, $e->getMessage());
+        }
+        $data = new \Lcobucci\JWT\ValidationData();
+        $data->setIssuer($token->getClaim('iss'));
+        $data->setAudience($token->getClaim('aud'));
+        $data->setId($token->getClaim('jti'));
+
+        if (!$token->validate($data)) {
+            return dataReturn(-2, 'token validate');
+        }
+        return dataReturn(0, '', [
+            'uid' => $token->getClaim('uid'),
+            'name' => $token->getClaim('name'),
+            'role' => $token->getClaim('role'),
+        ]);
     }
 }

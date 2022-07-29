@@ -1,0 +1,114 @@
+<?php
+
+namespace {%controllerNamespace%};
+
+use {%baseNamespace%}\Base;
+use app\admin\validate\admin\RoleValidate;
+use wksnow\service\RoleService;
+use think\exception\ValidateException;
+use think\annotation\Inject;
+
+class Role extends Base
+{
+    /**
+     * @Inject()
+     * @var RoleService
+     */
+    protected $roleService;
+
+
+    /**
+     * 获取菜单列表
+     * @return \think\response\Json
+     */
+    public function getRoleList()
+    {
+        $param = $this->request->only(['role_name','status','limit']);
+        $limit = $this->request->param('limit');
+        return json($this->roleService->getRoleList($param,$limit));
+    }
+
+
+    /**
+     * 角色信息
+     * @return \think\response\Json
+     */
+    public function getRoleInfo()
+    {
+        $roleId = $this->request->param("role_id/d",1);
+        if ($roleId <= 1){
+            return jsonReturn(-1, '角色不存在');
+        }
+        return json($this->roleService->getRoleById($roleId));
+    }
+
+    /**
+     * 新增角色
+     * @return \think\response\Json
+     */
+    public function addRole()
+    {
+        $param = $this->request->only(['role_name','role_node']);
+        // 检验完整性
+        try {
+            validate(RoleValidate::class)->scene('addRole')->check($param);
+        } catch (ValidateException $e) {
+            return jsonReturn(-1, $e->getError());
+        }
+
+        return json($this->roleService->addRole($param));
+    }
+
+
+    /**
+     * 修改角色
+     * @return \think\response\Json
+     */
+    public function editRole()
+    {
+        $param = $this->request->only(['role_id','role_name','role_node','status']);
+        // 检验完整性
+        try {
+            validate(RoleValidate::class)->scene('editRole')->check($param);
+        } catch (ValidateException $e) {
+            return jsonReturn(-1, $e->getError());
+        }
+
+        return json($this->roleService->editRole($param));
+    }
+
+
+    /**
+     * 修改角色
+     * @return \think\response\Json
+     */
+    public function changeRoleStatus()
+    {
+        $param = $this->request->only(['role_id','status']);
+        // 检验完整性
+        try {
+            validate(RoleValidate::class)->scene('changeRoleStatus')->check($param);
+        } catch (ValidateException $e) {
+            return jsonReturn(-1, $e->getError());
+        }
+
+        return json($this->roleService->changeRoleStatus($param));
+    }
+
+    /**
+     * 删除角色
+     * @return \think\response\Json
+     */
+    public function delRole()
+    {
+        $roleId = $this->request->param("role_id/d");
+        // 检验完整性
+        try {
+            validate(RoleValidate::class)->scene('delRole')->check(['role_id'=>$roleId]);
+        } catch (ValidateException $e) {
+            return jsonReturn(-1, $e->getError());
+        }
+
+        return json($this->roleService->delRole($roleId));
+    }
+}
