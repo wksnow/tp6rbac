@@ -5,6 +5,7 @@ namespace wksnow\model;
 
 
 use think\Exception;
+use wksnow\Auth\SelfException;
 
 class Role extends BaseModel
 {
@@ -21,7 +22,7 @@ class Role extends BaseModel
         try {
             $info = $this->where('role_name', $roleName)->field($field)->find();
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage(), -1);
+            throw new SelfException($e->getMessage(), -1);
         }
         return dataReturn(0, '查询成功', $info);
     }
@@ -37,7 +38,7 @@ class Role extends BaseModel
         try {
             $roleID = $this->insertGetId($addData);
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage(), -1);
+            throw new SelfException($e->getMessage(), -1);
         }
         return dataReturn(0, '添加成功', ['role_id' => $roleID]);
     }
@@ -56,7 +57,7 @@ class Role extends BaseModel
                 ->where('role_id', '<>', 1)
                 ->update($roleInfo);
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage(), -1);
+            throw new SelfException($e->getMessage(), -1);
         }
         return dataReturn(0, '更新成功', ['role_id' => $roleID]);
     }
@@ -75,7 +76,7 @@ class Role extends BaseModel
                 ->where('role_id', '=', $roleId)
                 ->delete();
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage(), -1);
+            throw new SelfException($e->getMessage(), -1);
         }
         return dataReturn(0, '删除成功');
     }
@@ -92,7 +93,7 @@ class Role extends BaseModel
         try {
             $list = $this->where($where)->select();
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage(), -1);
+            throw new SelfException($e->getMessage(), -1);
         }
         return dataReturn(0, '请求成功', $list);
     }

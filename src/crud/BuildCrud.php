@@ -129,9 +129,9 @@ class BuildCrud
               `create_time` datetime DEFAULT NULL COMMENT '创建时间',
               `update_time` datetime DEFAULT NULL COMMENT '更新时间',
               PRIMARY KEY (`role_id`) USING BTREE
-            ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COMMENT='角色表'");
+            ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COMMENT='角色表'");
 
-        Db::excute("INSERT INTO {$this->tablePrefix}role(`role_id`, `role_name`, `role_node`, `status`, `create_time`, `update_time`) VALUES (1, '超级管理员', '*', 1, '2021-05-13 10:12:44', '2022-01-10 15:45:47')");
+        Db::execute("INSERT INTO {$this->tablePrefix}role(`role_id`, `role_name`, `role_node`, `status`, `create_time`, `update_time`) VALUES (1, '超级管理员', '*', 1, '2021-05-13 10:12:44', '2022-01-10 15:45:47')");
     }
 
 

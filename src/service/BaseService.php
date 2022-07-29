@@ -6,6 +6,7 @@ namespace wksnow\service;
 
 
 use think\exception\ValidateException;
+use wksnow\SelfException;
 
 class BaseService
 {
@@ -26,7 +27,7 @@ class BaseService
                 \validate($validate)->scene($scene)->check($data);
             }
         }catch (ValidateException $e){
-          throw new \Exception($e->getMessage(),-1);
+          throw new SelfException($e->getMessage(),-1);
         }
     }
 

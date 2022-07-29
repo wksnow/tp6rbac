@@ -1,0 +1,29 @@
+<?php
+use think\facade\Route;
+
+//管理员账号管理
+Route::group("admin",function (){
+    Route::get("list","v1.admin.Admin/list"); //列表
+    Route::post("add","v1.admin.Admin/add"); //添加
+    Route::post("edit","v1.admin.Admin/edit"); //修改
+    Route::post("changePassword","v1.admin.Admin/changePassword"); //修改密码
+});
+//角色
+Route::group("role",function (){
+    Route::get("getRoleList","v1.admin.Role/getRoleList"); //角色列表
+    Route::get("getRoleInfo","v1.admin.Role/getRoleInfo"); //获取角色信息
+    Route::post("addRole","v1.admin.Role/addRole"); //新增角色
+    Route::post("editRole","v1.admin.Role/editRole"); //修改角色
+    Route::post("changeRoleStatus","v1.admin.Role/changeRoleStatus"); //变更角色状态
+    Route::post("delRole","v1.admin.Role/delRole"); //删除角色
+});
+//权限
+Route::group("node",function (){
+    Route::get("getAllNode","v1.admin.Node/getAllNode"); // 获取所有的权限节点
+    Route::get("getMenuList","v1.admin.Node/getMenuList"); //获取菜单
+    Route::get("getNodeList","v1.admin.Node/getNodeList"); //获取权限
+    Route::get("getSubsetNode","v1.admin.Node/getSubsetNode"); //获取子节点
+    Route::post("addNode","v1.admin.Node/addNode"); //添加节点
+    Route::post("editNode","v1.admin.Node/editNode"); //编辑节点
+    Route::post("delNode","v1.admin.Node/delNode"); //删除节点
+});

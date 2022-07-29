@@ -30,7 +30,7 @@ class RoleService extends BaseService
         if (!empty($param['status'])) {
             $where[] = ['status', '=', $param['status']];
         }
-        return $this->roleModel->getList($where, $limit);
+        return pageReturn($this->roleModel->getList($where, $limit));
     }
 
 

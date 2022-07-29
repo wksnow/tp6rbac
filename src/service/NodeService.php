@@ -4,6 +4,7 @@
 namespace wksnow\service;
 
 
+use wksnow\SelfException;
 use wksnow\model\Admin;
 use wksnow\model\Node;
 use wksnow\model\Role;
@@ -26,7 +27,7 @@ class NodeService
     {
         $adminModel = new Admin();
         $adminInfoRes = $adminModel->getInfo(['admin_id' => $adminId])['data'];
-        if (empty($adminInfoRes)) throw new \Exception("管理员不存在", -1);
+        if (empty($adminInfoRes)) throw new SelfException("管理员不存在", -1);
 
         $admin = [
             'id' => $adminInfoRes['admin_id'],
@@ -41,7 +42,7 @@ class NodeService
         } else {
             $roleModel = new Role();
             $roleInfoRes = $roleModel->getInfo(['role_id'=>$roleId])['data'];
-            if (empty($roleInfoRes)) throw new \Exception("角色异常", -1);
+            if (empty($roleInfoRes)) throw new SelfException("角色异常", -1);
 
             if ($roleInfoRes['role_node'] == '*') {
                 $nodeListRes = $this->nodeModel->getListNoLimit(['is_del'=>1])['data'];
@@ -73,7 +74,7 @@ class NodeService
         } else {
             $roleModel = new Role();
             $roleInfoRes = $roleModel->getInfo(['role_id'=>$roleId])['data'];
-            if (empty($roleInfoRes)) throw new \Exception("角色不存在",-1);
+            if (empty($roleInfoRes)) throw new SelfException("角色不存在",-2);
             $nodeListRes = $this->nodeModel->getListNoLimit([['node_id', 'in', $roleInfoRes['role_node']],['is_del','=',1]])['data'];
         }
         return $nodeListRes;

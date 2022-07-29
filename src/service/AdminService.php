@@ -35,14 +35,14 @@ class AdminService extends BaseService
         if (!empty($param['status'])) {
             $where[] = ['status', '=', $param['status']];
         }
-        $adminList = $this->adminModel->getList($where, $limit, 'admin_id,admin_name,nick_name,admin_avatar,role_id,status,create_time', 'admin_id desc');
+        $field="admin_id,admin_name,nick_name,admin_avatar,role_id,status,create_time";
+        $adminList = $this->adminModel->getList($where, $limit, $field, 'admin_id desc');
         if (!empty($adminList['data'])) {
-            $adminArr = $adminList['data']->toArray();
-            $roleIdArr = array_column($adminArr, 'role_id');
+            $roleIdArr = array_column($adminList['data']->toArray(), 'role_id');
             $roleIdArr = array_values(array_unique($roleIdArr));
             $roleModel = new Role();
-            $roleList = $roleModel->getRoleList([['role_id', 'in', $roleIdArr]]);
-            $roleArr = array_column($roleList['data'], 'role_name', 'role_id');
+            $roleList = $roleModel->getRoleList([['role_id', 'in', $roleIdArr]])['data'];
+            $roleArr = array_column($roleList->toarray(), 'role_name', 'role_id');
             foreach ($adminList['data']->items() as $value) {
                 $value->role_name = $roleArr[$value->role_id];
             }

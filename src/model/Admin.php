@@ -4,6 +4,8 @@
 namespace wksnow\model;
 
 
+use wksnow\Auth\SelfException;
+
 class Admin extends BaseModel
 {
     /**
@@ -18,7 +20,7 @@ class Admin extends BaseModel
         try{
             $info = $this->where('admin_name',$adminName)->field($field)->find();
         }catch (\Exception $e){
-          throw new \Exception($e->getMessage(),-1);
+          throw new SelfException($e->getMessage(),-1);
         }
         return dataReturn(0,'查询成功',$info);
     }
@@ -34,7 +36,7 @@ class Admin extends BaseModel
         try{
             $list = $this->where('role_id', $roleId)->select()->toArray();
         }catch (\Exception $e){
-            throw new \Exception($e->getMessage(),-1);
+            throw new SelfException($e->getMessage(),-1);
         }
         return dataReturn(0, 'success', $list);
     }

@@ -36,7 +36,8 @@ class BuildFile
             $this->makefile($extendfile,$basecontent);
         }
 
-        $controllerName = ["Admin.php"=>"controller/adminController","Node.php"=>"controller/nodeController","Role.php"=>"controller/roleController"];
+        $controllerName = ["Admin.php"=>"controller/adminController",
+            "Node.php"=>"controller/nodeController","Role.php"=>"controller/roleController"];
         $pathName = \think\facade\App::getRootPath().$basecontrollernamespace.'/admin';
         foreach ($controllerName as $k=>$v){
             $fileName = $pathName.'/'.$k;
@@ -62,6 +63,43 @@ class BuildFile
             $fileName = $bathValidatePath.'/'.$k;
             $stubcontent = file_get_contents($this->getStub($v));
             $this->makefile($fileName,$stubcontent,$force);
+        }
+    }
+
+    /**
+     * 设置route路由分组的文件
+     */
+    public function setRoute($force=0)
+    {
+        $stubcontent = file_get_contents($this->getStub("route/admin"));
+        $fileName = \think\facade\App::getRootPath()."/app/admin/route/admin.php";
+        $this->makefile($fileName,$stubcontent);
+    }
+
+    /**
+     * 读取ExceptionHandle文件并写入内容
+     */
+    public function setException($force=0)
+    {
+        $oldContent = <<<old
+return parent::render(\$request, \$e);
+old;
+
+        $newContent = <<<new
+if (\$e instanceof SelfException)
+        {
+         \$e->saveMyErrorTrace(); 
+        return jsonReturn(\$e->getCode(), \$e->getMessage());
+        }
+        return parent::render(\$request, \$e);
+new;
+
+        $fileName = \think\facade\App::getRootPath()."/app/ExceptionHandle.php";
+        $exceptionHandle = file_get_contents($fileName);
+        if(false==strstr($exceptionHandle,"use wksnow\SelfException;")){
+            $exceptionHandle = str_replace("use Throwable;","use wksnow\SelfException;\n use Throwable;",$exceptionHandle);
+            $exceptionHandle = str_replace($oldContent, $newContent,$exceptionHandle);
+            $this->makefile($fileName,$exceptionHandle);
         }
 
     }

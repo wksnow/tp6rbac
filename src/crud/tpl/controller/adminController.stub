@@ -6,33 +6,25 @@ use {%baseNamespace%}\Base;
 use app\admin\validate\admin\AdminValidate;
 use wksnow\service\AdminService;
 use think\exception\ValidateException;
-use think\annotation\Inject;
 
 class Admin extends Base
 {
-
-     /**
-         * @Inject()
-         * @var AdminService
-         */
-        protected $adminService;
-
      /**
          * 账号列表
          * @return \think\response\Json
          */
-        public function list()
+        public function list(AdminService $adminService)
         {
             $param = $this->request->only(['admin_name','nick_name','role_id','status','limit']);
             $limit = $this->request->param('limit');
-            return json($this->adminService->getAdminList($param,$limit));
+            return json($adminService->getAdminList($param,$limit));
         }
 
         /**
          * 新增账户
          * @return \think\response\Json
          */
-        public function add()
+        public function add(AdminService $adminService)
         {
             $param = $this->request->only(['admin_name','nick_name','admin_avatar','admin_pwd','role_id','status']);
             // 检验完整性
@@ -41,7 +33,7 @@ class Admin extends Base
             } catch (ValidateException $e) {
                 return jsonReturn(-1, $e->getError());
             }
-            return json($this->adminService->addAdmin($param));
+            return json($adminService->addAdmin($param));
         }
 
 
@@ -49,7 +41,7 @@ class Admin extends Base
          * 新增账户
          * @return \think\response\Json
          */
-        public function edit()
+        public function edit(AdminService $adminService)
         {
             $param = $this->request->only(['admin_id','admin_name','nick_name','admin_avatar','admin_pwd','role_id','status']);
             // 检验完整性
@@ -58,7 +50,7 @@ class Admin extends Base
             } catch (ValidateException $e) {
                 return jsonReturn(-1, $e->getError());
             }
-            return json($this->adminService->editAdmin($param));
+            return json($adminService->editAdmin($param));
         }
 
 
@@ -66,7 +58,7 @@ class Admin extends Base
          * 修改密码
          * @return \think\response\Json
          */
-        public function changePassword()
+        public function changePassword(AdminService $adminService)
         {
             $adminPwd = $this->request->param('admin_pwd');
             // 检验完整性
@@ -75,7 +67,7 @@ class Admin extends Base
             } catch (ValidateException $e) {
                 return jsonReturn(-1, $e->getError());
             }
-            return json($this->adminService->changePassword($this->user['uid'],$adminPwd));
+            return json($adminService->changePassword($this->user['uid'],$adminPwd));
         }
 
 }

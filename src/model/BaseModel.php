@@ -5,6 +5,7 @@ namespace wksnow\model;
 
 use think\Exception;
 use think\Model;
+use wksnow\SelfException;
 
 class BaseModel extends Model
 {
@@ -22,7 +23,7 @@ class BaseModel extends Model
         try {
             $list = $this->where($where)->order($order)->field($field)->paginate($limit);
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage(),-1);
+            throw new SelfException($e->getMessage(),-1);
         }
         return dataReturn(0, '查询成功', $list);
     }
@@ -39,7 +40,7 @@ class BaseModel extends Model
         try {
             $list = $this->where($where)->field($field)->select();
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage(),-1);
+            throw new SelfException($e->getMessage(),-1);
         }
         return dataReturn(0, '查询成功', $list);
     }
@@ -56,7 +57,7 @@ class BaseModel extends Model
         try{
             $info = $this->where($where)->field($field)->find();
         }catch (\Exception $e){
-            throw new \Exception($e->getMessage(),-1);
+            throw new SelfException($e->getMessage(),-1);
         }
         return dataReturn(0,'查询成功',$info);
     }
@@ -72,7 +73,7 @@ class BaseModel extends Model
         try{
             $id = self::insertGetId($param);
         }catch (\Exception $e){
-            throw new \Exception($e->getMessage(),-1);
+            throw new SelfException($e->getMessage(),-1);
         }
         return dataReturn(0,'添加成功', $id);
     }
@@ -88,7 +89,7 @@ class BaseModel extends Model
         try{
             $this->where($where)->update($data);
         }catch (\Exception $e){
-            throw new \Exception($e->getMessage(),-1);
+            throw new SelfException($e->getMessage(),-1);
         }
         return dataReturn(0,'修改成功');
     }
