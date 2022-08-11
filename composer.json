@@ -1,6 +1,7 @@
 {
   "name": "wksnow/tp6rbac",
   "description": "tp6.0的rbac",
+  "license": "MIT",
   "authors": [
     {
       "name": "wangkun",
