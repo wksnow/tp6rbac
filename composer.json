@@ -1,13 +1,13 @@
 {
   "name": "wksnow/tp6rbac",
   "description": "tp6.0的rbac",
-  "license": "MIT",
   "authors": [
     {
       "name": "wangkun",
       "email": "384452790@qq.com"
     }
   ],
+  "license": "MIT",
   "require": {
     "php": ">=7.*",
     "topthink/framework": "^6.0.0",
